@@ -1,0 +1,13 @@
+{
+  "name": "Shirley Casino",
+  "short_name": "Shirley",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f0eaf8",
+  "theme_color": "#9b7ed4",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}

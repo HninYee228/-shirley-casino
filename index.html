@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Shirley Casino</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#9b7ed4">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{
+  --card:#fff;--card2:#f7f3fd;--ink:#3a3050;--muted:#9188aa;
+  --gold2:#9b7ed4;--ring:#d8cff0;--lilac:#e2d5f8;--lavender:#cbbef5;
+  --blue:#c5d8f8;--pink:#f5d0e8;--yellow:#f5f0c8;--sky:#d0ecf8;
+  --wbg:#d0ecf8;--wtx:#2a6080;--lbg:#f5d0e8;--ltx:#8a3060;
+  --evbg:#e8e8e8;--evtx:#555;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:system-ui,sans-serif;color:var(--ink);max-width:980px;margin:20px auto;padding:20px;
+  background:linear-gradient(135deg,#f0eaf8,#e8e0f5 40%,#dde8f8);min-height:100vh;
+}
+h1{font-size:2.1rem;color:var(--gold2);text-align:center;margin-bottom:4px;}
+.sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:18px;}
+.tabs{display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}
+.tab{padding:9px 26px;border-radius:999px;border:2px solid var(--lavender);background:var(--card);color:var(--muted);font-weight:700;cursor:pointer;font-size:14px;transition:.2s;}
+.tab.on{background:var(--lavender);color:var(--ink);border-color:var(--gold2);}
+.tab:hover:not(.on){background:var(--lilac);}
+.pane{display:none;}
+.pane.on{display:block;}
+.timer{background:var(--card);border:1.5px solid var(--ring);color:var(--gold2);padding:8px;border-radius:10px;text-align:center;font-weight:700;margin-bottom:10px;font-size:14px;}
+.stats{display:flex;justify-content:space-around;background:var(--card);border:1.5px solid var(--ring);padding:12px;border-radius:10px;margin-bottom:10px;}
+.sv{color:var(--gold2);font-weight:800;font-size:20px;text-align:center;}
+.sl{color:var(--muted);font-size:12px;text-align:center;}
+.pot{background:var(--card2);border:1.5px solid var(--ring);color:var(--gold2);padding:12px;border-radius:10px;text-align:center;font-size:17px;font-weight:800;margin-bottom:8px;}
+.bal{background:var(--blue);border:1.5px solid #a8ccee;color:#2a5575;padding:8px;border-radius:9px;text-align:center;font-weight:700;margin-bottom:14px;}
+.bal.err{background:var(--pink);border-color:#e0a0c0;color:#8a3060;}
+.brow{text-align:right;margin-bottom:12px;}
+.brow label{font-size:12px;color:var(--muted);font-weight:700;margin-right:5px;}
+.grid{display:grid;gap:12px;}
+@media(min-width:680px){.grid{grid-template-columns:1fr 1fr;}}
+.pcard{background:var(--card);border:1.5px solid var(--ring);border-left:4px solid var(--lavender);border-radius:12px;padding:13px;}
+.pcard.hs{border-left-color:var(--gold2);}
+.row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:7px;}
+.seat-lbl{background:var(--lilac);border:1.5px solid var(--lavender);color:var(--gold2);padding:3px 9px;border-radius:999px;font-size:11px;font-weight:800;}
+.pill{font-size:11px;font-weight:800;padding:3px 8px;border-radius:999px;}
+.pill-w{background:var(--wbg);color:var(--wtx);}
+.pill-l{background:var(--lbg);color:var(--ltx);}
+.pill-i{background:var(--lilac);color:var(--gold2);}
+.profit{padding:6px 11px;border-radius:999px;font-size:12px;font-weight:800;}
+.pr{background:var(--wbg);color:var(--wtx);border:1.5px solid #a8ccee;}
+.ls{background:var(--lbg);color:var(--ltx);border:1.5px solid #e0a0c0;}
+.ev{background:var(--evbg);color:var(--evtx);border:1.5px solid #ccc;}
+.st-a{background:var(--blue);color:#2a5575;border:1.5px solid #a8ccee;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;}
+.st-n{background:var(--pink);color:#7a2550;border:1.5px solid #e0a0c0;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;}
+select,input[type=number],input[type=text]{padding:6px 7px;border-radius:6px;border:1.5px solid var(--ring);background:var(--card);color:var(--ink);font-size:12px;}
+.name-sel{font-size:14px;font-weight:800;min-width:120px;}
+.btn{background:linear-gradient(180deg,var(--lavender),var(--gold2));color:#fff;border:1.5px solid var(--gold2);padding:7px 12px;border-radius:8px;font-weight:800;cursor:pointer;font-size:12px;transition:filter .15s;}
+.btn:hover{filter:brightness(1.08);}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.btn-r{background:linear-gradient(180deg,#f0d8ec,#d8a0c8);color:#7a2550;border-color:#d8a0c8;}
+.btn-b{background:linear-gradient(180deg,#d8e8f8,#90b8e8);color:#1a3a6a;border-color:#90b8e8;}
+.btn-g{background:linear-gradient(180deg,#d8f0f0,#80c8c8);color:#1a5050;border-color:#80c8c8;}
+.buyin-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.buyin-box{background:var(--card2);color:var(--gold2);border:1.5px solid var(--ring);padding:7px 10px;border-radius:8px;text-align:center;font-weight:700;font-size:12px;}
+.sec{border-radius:10px;padding:10px;margin-top:7px;}
+.sec-y{background:var(--yellow);border:1.5px solid #e0d890;}
+.sec-b{background:var(--sky);border:1.5px solid #a8d8f0;}
+.sec-lbl{font-size:12px;font-weight:800;margin-bottom:5px;}
+.entry{font-size:11px;background:var(--card);border:1.5px solid var(--ring);padding:4px 7px;border-radius:5px;margin-bottom:3px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.entry > span{white-space:nowrap;}
+.entry .grow{flex:1;white-space:normal;}
+.xbtn{background:var(--lbg);color:var(--ltx);border:1.5px solid #e0a0c0;padding:1px 6px;border-radius:4px;cursor:pointer;font-size:11px;font-weight:800;}
+.panel{background:var(--card);border:1.5px solid var(--ring);border-radius:12px;padding:14px;margin-top:14px;}
+.panel-t{color:var(--gold2);text-align:center;font-size:17px;font-weight:800;margin-bottom:10px;}
+.sitem{background:var(--card2);border:1.5px solid var(--ring);border-radius:10px;padding:11px;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center;}
+.samt{background:var(--lilac);color:var(--gold2);border:1.5px solid var(--lavender);padding:5px 11px;border-radius:999px;font-weight:800;}
+.abar{text-align:center;margin-top:16px;}
+.reset-btn{background:linear-gradient(180deg,var(--lavender),var(--gold2));color:#fff;border:1.5px solid var(--gold2);padding:11px 24px;border-radius:12px;font-weight:900;cursor:pointer;font-size:14px;}
+.btns{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:10px;}
+.frow{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
+.frow label{font-size:12px;color:var(--muted);font-weight:700;}
+.tbar{background:var(--card);border:1.5px solid var(--ring);border-radius:10px;padding:12px;text-align:center;margin-bottom:10px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:9px;margin-top:9px;}
+.mcard{background:var(--card);border:1.5px solid var(--ring);border-radius:10px;padding:11px;text-align:center;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{background:var(--lilac);color:var(--gold2);padding:8px 9px;text-align:left;font-weight:800;border-bottom:2px solid var(--lavender);}
+td{padding:7px 9px;border-bottom:1px solid var(--ring);color:var(--ink);}
+tr:hover td{background:var(--card2);}
+.wc{color:var(--wtx);font-weight:800;}
+.lc{color:var(--ltx);font-weight:800;}
+.np{color:var(--wtx);font-weight:900;}
+.nn{color:var(--ltx);font-weight:900;}
+.nz{color:var(--muted);font-weight:700;}
+.del{background:var(--lbg);color:var(--ltx);border:1.5px solid #e0a0c0;padding:2px 7px;border-radius:4px;cursor:pointer;font-size:11px;font-weight:800;}
+.modal{display:none;position:fixed;inset:0;z-index:999;background:rgba(60,40,100,.4);}
+.modal.on{display:block;}
+.modal-box{background:var(--card);border:1.5px solid var(--ring);margin:60px auto;padding:20px;border-radius:12px;width:90%;max-width:540px;max-height:80vh;overflow-y:auto;}
+.hitem{background:var(--card2);border:1.5px solid var(--ring);padding:10px;border-radius:8px;margin:6px 0;}
+.err-note{position:fixed;top:16px;right:16px;background:var(--lbg);border:1.5px solid #d890b0;color:#8a3060;padding:11px 14px;border-radius:8px;display:none;z-index:2000;font-weight:700;font-size:13px;max-width:min(420px,92vw);}
+</style>
+</head>
+<body>
+<h1>🎰 Shirley Casino</h1>
+<p class="sub">Professional Poker Night Tracking • Player Substitutions • Monthly Stats</p>
+
+<div class="tabs">
+  <button class="tab on" id="tabGame" type="button">🃏 Game Night</button>
+  <button class="tab" id="tabMonthly" type="button">📅 Monthly Tracker</button>
+</div>
+
+<div id="pane-game" class="pane on">
+  <div class="timer" id="timerEl">Game Time: 00:00:00</div>
+  <div class="stats">
+    <div><div class="sv" id="sActive">0</div><div class="sl">Active</div></div>
+    <div><div class="sv" id="sTotal">0</div><div class="sl">Total</div></div>
+    <div><div class="sv" id="sLeft">0</div><div class="sl">Left</div></div>
+  </div>
+  <div class="pot" id="potEl">Total Pot: $0 | Paid Out: $0</div>
+  <div class="bal" id="balEl">Balance: Perfect ✓</div>
+  <div class="brow">
+    <label for="buyInInput">Buy-in $</label>
+    <input id="buyInInput" type="number" min="1" step="1" value="5" style="width:72px;">
+  </div>
+  <div class="grid" id="gridEl"></div>
+
+  <div class="panel" id="settlePanel" style="display:none;">
+    <div class="panel-t">💸 Settlements</div>
+    <div id="settleList"></div>
+  </div>
+
+  <div class="panel" id="summaryPanel" style="display:none;">
+    <div class="panel-t">📊 Final Summary</div>
+    <div id="summaryList"></div>
+  </div>
+
+  <div class="abar">
+    <button class="reset-btn" id="btnReset" type="button">🔄 Reset Game</button>
+    <div class="btns">
+      <button class="btn" id="btnHistory" type="button">📚 History</button>
+      <button class="btn" id="btnExport" type="button">📥 Export</button>
+      <button class="btn" id="btnReport" type="button">📊 Report</button>
+      <button class="btn btn-r" id="btnClearAll" type="button">🧹 Clear All</button>
+    </div>
+  </div>
+</div>
+
+<div id="pane-monthly" class="pane">
+  <div style="background:var(--blue);border:1.5px solid #a8ccee;border-radius:10px;padding:11px 14px;margin-bottom:12px;color:#2a5575;font-size:13px;text-align:center;">
+    💡 Outside cash is logged automatically from <strong>Game Night → 💵 Outside Cash</strong> on each player card.
+  </div>
+
+  <div class="panel">
+    <div class="panel-t">📊 Monthly Summary</div>
+    <div class="frow">
+      <label>Month:</label>
+      <select id="fMonth">
+        <option value="0">All</option>
+        <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+        <option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option>
+        <option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option>
+        <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+      </select>
+      <select id="fYear" style="width:85px;"></select>
+      <label>Player:</label>
+      <select id="fPlayer"><option value="">All</option></select>
+      <label>Source:</label>
+      <select id="fSource">
+        <option value="">All</option>
+        <option value="inside">🪙 Inside</option>
+        <option value="outside">💵 Outside</option>
+      </select>
+    </div>
+
+    <div class="tbar" id="tbarEl"></div>
+
+    <div style="overflow-x:auto;">
+      <table><thead><tr><th>Player</th><th>Won</th><th>Lost</th><th>Net</th><th>🪙 Inside</th><th>💵 Outside</th></tr></thead>
+      <tbody id="totTbody"></tbody></table>
+    </div>
+
+    <div class="cards" id="mCards"></div>
+
+    <div style="overflow-x:auto;margin-top:12px;">
+      <table><thead><tr><th>Player</th><th>Date</th><th>Source</th><th>Result</th><th>Amount</th><th>Note</th><th></th></tr></thead>
+      <tbody id="detTbody"></tbody></table>
+      <p id="mEmpty" style="text-align:center;color:var(--muted);padding:12px;display:none;">No entries yet.</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="histModal" aria-hidden="true">
+  <div class="modal-box">
+    <button class="btn btn-r" id="btnCloseModal" type="button" style="float:right;margin-bottom:8px;">✖ Close</button>
+    <h2 style="color:var(--gold2);margin-bottom:10px;">📚 Previous Games</h2>
+    <div id="histList"></div>
+  </div>
+</div>
+
+<div class="err-note" id="errNote"></div>
+
+<script>
+'use strict';
+
+// (JS is large; loaded from separate file in the zip for readability.)
+</script>
+
+<script src="app.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
